@@ -3,13 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://amittras-pal.github.io/goal-tracker",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -21,6 +21,7 @@
     "@mantine/notifications": "^7.15.3",
     "@mantine/spotlight": "^7.15.3",
     "@mantine/tiptap": "^7.15.3",
+    "@tabler/icons-react": "^3.28.1",
     "@tiptap/extension-link": "^2.11.0",
     "@tiptap/pm": "^2.11.0",
     "@tiptap/react": "^2.11.0",
