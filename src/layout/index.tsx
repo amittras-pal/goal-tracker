@@ -5,12 +5,13 @@ import {
   MantineProvider,
   Text,
 } from "@mantine/core";
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import { useDisclosure } from "@mantine/hooks";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import { Outlet } from "react-router-dom";
 import GoalProvider from "../context/GoalProvider";
-import ImportExport from "../modules/io";
-import "@mantine/core/styles.css";
-import '@mantine/dates/styles.css';
 import Navigation from "./Navigation";
 
 export default function Layout() {
@@ -23,6 +24,7 @@ export default function Layout() {
       withCssVariables
     >
       <GoalProvider>
+        <Notifications position="bottom-center" autoClose={3500} />
         <AppShell
           header={{ height: 40 }}
           padding="md"
@@ -49,11 +51,10 @@ export default function Layout() {
             <Text size="lg" fw="bold">
               Goal Tracker
             </Text>
-            <ImportExport />
           </AppShell.Header>
 
           <AppShell.Navbar p="md">
-            <Navigation toggle={toggle}/>
+            <Navigation toggle={toggle} />
           </AppShell.Navbar>
 
           <AppShell.Main>

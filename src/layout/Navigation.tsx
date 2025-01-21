@@ -13,7 +13,7 @@ export default function Navigation({ toggle }: { toggle: () => void }) {
         to="/tracker"
         onClick={toggle}
       >
-        Goal Tracking
+        Track Goals
       </Button>
       <Button
         mb="sm"
@@ -23,7 +23,17 @@ export default function Navigation({ toggle }: { toggle: () => void }) {
         to="/configurator"
         onClick={toggle}
       >
-        Goal Configurator
+        Create / Change Goals
+      </Button>
+      <Button
+        mb="sm"
+        variant="default"
+        fullWidth
+        component={Link}
+        to="/io"
+        onClick={toggle}
+      >
+        Import / Export Goals
       </Button>
     </>
   );

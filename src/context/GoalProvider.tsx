@@ -9,10 +9,14 @@ export default function GoalProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     (async () => {
-      await initDB();
-      await getData(Stores.Goals).then(res => {
-        if(res.length > 0 && Array.isArray(res)) setGoals(res);
-      })
+      try {
+        await initDB();
+        await getData(Stores.Goals).then((res) => {
+          if (res.length > 0 && Array.isArray(res)) setGoals(res);
+        });
+      } catch (error) {
+        console.error(error);
+      }
     })();
   }, []);
 
@@ -35,7 +39,10 @@ export default function GoalProvider({ children }: PropsWithChildren) {
       if (g.id === gid) {
         return {
           ...g,
-          entries: [...(g.entries || []), {...entry, id: v4().split("-").at(-1)!}],
+          entries: [
+            ...(g.entries || []),
+            { ...entry, id: v4().split("-").at(-1)! },
+          ],
         };
       }
       return g;

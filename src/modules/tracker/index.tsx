@@ -25,11 +25,14 @@ export default function Tracker() {
       {!collections ? (
         <Text ta="center">
           No Goals are set, please use the{" "}
-          <Text component={Link} to="/configurator" c='indigo' td='underline' >
+          <Text component={Link} to="/configurator" c="indigo" td="underline">
             configurator
           </Text>{" "}
-          to set your goals. <br />
-          Or import your data using the button above.
+          to set your goals. Or{" "}
+          <Text component={Link} to="/io" c="indigo" td="underline">
+            import your goals{" "}
+          </Text>
+          from an exported file.
         </Text>
       ) : (
         <>

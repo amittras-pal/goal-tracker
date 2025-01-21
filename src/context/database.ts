@@ -1,73 +1,95 @@
 import { GoalConfig } from "./context";
 
-let request: IDBOpenDBRequest;
-let db: IDBDatabase;
-let version = 1;
-
 export const DB_NAME = 'goalTracker';
-export enum Stores {
-    Goals = 'goals'
+export enum Stores { Goals = 'goals' };
+
+const connect = (): IDBOpenDBRequest => {
+    return indexedDB.open(DB_NAME);
+}
+
+const disconnect = (req: IDBOpenDBRequest): void => {
+    req.result.close();
 }
 
 export const initDB = (): Promise<boolean> => {
-    return new Promise(resolve => {
-        request = indexedDB.open(DB_NAME);
+    return new Promise((resolve, reject) => {
+        const request = connect();
         request.onupgradeneeded = () => {
-            db = request.result;
-            if (!db.objectStoreNames.contains(Stores.Goals)) {
-                db.createObjectStore(Stores.Goals, { keyPath: 'id' })
-            }
+            if (!request.result.objectStoreNames.contains(Stores.Goals))
+                request.result.createObjectStore(Stores.Goals, { keyPath: 'id' })
         }
-
         request.onsuccess = () => {
-            db = request.result;
-            version = db.version;
             resolve(true);
+            disconnect(request);
         }
-
         request.onerror = () => {
-            resolve(false);
+            reject(false);
+            disconnect(request);
         }
     })
 }
 
 export const writeToDB = (storeName: Stores, data: GoalConfig[]): Promise<GoalConfig[] | string | null> => {
-    return new Promise(resolve => {
-        request = indexedDB.open(DB_NAME, version);
+    return new Promise((resolve, reject) => {
+        const request = connect();
 
         request.onsuccess = () => {
-            db = request.result;
-            const tx = db.transaction(storeName, 'readwrite');
+            const tx = request.result.transaction(storeName, 'readwrite');
             const store = tx.objectStore(storeName);
             data.forEach(item => {
                 store.put(item);
             })
-            resolve(data)
+            resolve(data);
+            disconnect(request);
         }
 
         request.onerror = () => {
             const error = request.error?.message;
-            if (error) resolve(error);
-            else resolve('Unknown Error!!')
+            if (error) reject(error);
+            else reject('Unknown Error!!')
+            disconnect(request);
         }
     })
 }
 
 export const getData = (storeName: Stores): Promise<GoalConfig[] | string> => {
-    return new Promise(resolve => {
-        request = indexedDB.open(DB_NAME);
+    return new Promise((resolve, reject) => {
+        const request = connect();
+
         request.onsuccess = () => {
-            db = request.result;
-            const tx = db.transaction(storeName, 'readonly');
+            const tx = request.result.transaction(storeName, 'readonly');
             const store = tx.objectStore(storeName);
             const res = store.getAll();
             res.onsuccess = () => {
                 resolve(res.result);
+                disconnect(request);
             }
         }
 
         request.onerror = () => {
-            resolve('Something went wrong.')
+            reject('Something went wrong.')
+            disconnect(request);
+        }
+    })
+}
+
+export const clearStore = (storeName: Stores): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+        const request = connect();
+        request.onsuccess = () => {
+            const tx = request.result.transaction(storeName, 'readwrite');
+            const store = tx.objectStore(storeName);
+            const clearReq = store.clear();
+
+            clearReq.onsuccess = () => {
+                resolve(true);
+                disconnect(request)
+            }
+
+            clearReq.onerror = () => {
+                reject(false);
+                disconnect(request);
+            }
         }
     })
 }

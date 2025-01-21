@@ -4,6 +4,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 import Layout from "./layout/index.tsx";
 import Configurator from "./modules/configurator/index.tsx";
 import Tracker from "./modules/tracker/index.tsx";
+import IOSync from "./modules/io/index.tsx";
 
 const router = createHashRouter([
   {
@@ -13,6 +14,7 @@ const router = createHashRouter([
       { path: "/", index: true, element: <Tracker /> },
       { path: "/tracker", element: <Tracker /> },
       { path: "/configurator", element: <Configurator /> },
+      { path: "/io", element: <IOSync /> },
     ],
   },
 ]);

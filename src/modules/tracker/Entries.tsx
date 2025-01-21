@@ -3,7 +3,6 @@ import { Calendar } from "@mantine/dates";
 import dayjs from "dayjs";
 import { Entry, GoalConfig } from "../../context/context";
 import { useState } from "react";
-import { IconInfoCircle } from "@tabler/icons-react";
 
 export default function Entries(props: { data: GoalConfig }) {
   const [entry, setEntry] = useState<Entry | null>(null);
@@ -61,7 +60,6 @@ export default function Entries(props: { data: GoalConfig }) {
           withCloseButton
           onClose={() => setEntry(null)}
           title={`Notes for ${dayjs(entry.date).format('DD MMM')}`}
-          icon={<IconInfoCircle />}
         >
           {entry.notes}
         </Alert>

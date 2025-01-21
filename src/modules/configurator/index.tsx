@@ -11,9 +11,13 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { GoalType, useGoals } from "../../context/context";
 import { useEffect } from "react";
 import dayjs from "dayjs";
+import { notifications } from "@mantine/notifications";
+import { useNavigate } from "react-router-dom";
 
 export default function Configurator() {
   const { saveGoals: updateGoals, goals } = useGoals();
+
+  const navigate = useNavigate();
 
   const { register, control, getValues, setValue, handleSubmit, watch } =
     useForm({
@@ -30,7 +34,18 @@ export default function Configurator() {
   }, [goals, setValue]);
 
   return (
-    <Box component="form" onSubmit={handleSubmit((e) => updateGoals(e.goals))}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit((e) => {
+        updateGoals(e.goals);
+        notifications.show({
+          title: "Goals Saved",
+          message: "Your goals have been updated.",
+          color: "green",
+        });
+        navigate("/tracker");
+      })}
+    >
       {fields.map((field, index) => {
         const blocked = !field.createdOn
           ? false
@@ -41,7 +56,7 @@ export default function Configurator() {
             key={field.id}
             style={(theme) => ({
               padding: theme.spacing.sm,
-              marginTop: theme.spacing.md,
+              marginBottom: theme.spacing.md,
               borderRadius: theme.radius.sm,
               backgroundColor: theme.colors.dark[6],
             })}
@@ -109,9 +124,11 @@ export default function Configurator() {
           </Box>
         );
       })}
-      <Group justify="space-between" mt="sm">
+      <Group justify="space-between">
         <Button
-          onClick={() => append({ title: "", type: "single", target: 0, description: '' })}
+          onClick={() =>
+            append({ title: "", type: "single", target: 0, description: "" })
+          }
         >
           Add Goal
         </Button>
