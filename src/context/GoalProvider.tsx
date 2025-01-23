@@ -20,7 +20,7 @@ export default function GoalProvider({ children }: PropsWithChildren) {
     })();
   }, []);
 
-  const updateDB = async (data: GoalConfig[]) => {
+  const writeToDisk = async (data: GoalConfig[]) => {
     await writeToDB(Stores.Goals, data);
   };
 
@@ -31,38 +31,68 @@ export default function GoalProvider({ children }: PropsWithChildren) {
       id: g.id || v4().split("-").at(-1),
     }));
     setGoals(updatedGoals);
-    updateDB(updatedGoals);
+    writeToDisk(updatedGoals);
   };
 
-  const addEntry = (gid: string, entry: Entry) => {
+  const updateEntries = (gid: string, entry: Entry) => {
     const updatedGoals = goals.map((g) => {
       if (g.id === gid) {
-        return {
-          ...g,
-          entries: [
-            ...(g.entries || []),
-            { ...entry, id: v4().split("-").at(-1)! },
-          ],
-        };
+        if (!entry.id)
+          return {
+            ...g,
+            entries: [
+              ...(g.entries || []),
+              { ...entry, id: v4().split("-").at(-1)! },
+            ],
+          };
+        else {
+          const index = g.entries?.findIndex((e) => e.id === entry.id) ?? -1;
+          if (index > -1) {
+            g.entries![index].date = entry.date;
+            g.entries![index].notes = entry.notes;
+          }
+          return g;
+        }
       }
       return g;
     });
-
     setGoals(updatedGoals);
-    updateDB(updatedGoals);
+    writeToDisk(updatedGoals);
+  };
+
+  const deleteEntry = (gid: string, entryId: string) => {
+    const gidx = goals.findIndex((g) => g.id === gid);
+    if (gidx > -1)
+      goals[gidx].entries =
+        goals[gidx].entries?.filter((entry) => entry.id !== entryId) ?? [];
+
+    setGoals(goals);
+    writeToDisk(goals);
   };
 
   const updateStatusForSingleGoal = (gid: string, completed: boolean) => {
     const updatedGoals = goals.map((item) => {
-      return item.id === gid ? { ...item, completed } : item;
+      return item.id === gid
+        ? {
+            ...item,
+            completed,
+            completedOn: completed ? dayjs().toISOString() : null,
+          }
+        : item;
     });
     setGoals(updatedGoals);
-    updateDB(updatedGoals);
+    writeToDisk(updatedGoals);
   };
 
   return (
     <GoalContext.Provider
-      value={{ goals, saveGoals, addEntry, updateStatusForSingleGoal }}
+      value={{
+        goals,
+        saveGoals,
+        updateEntries,
+        updateStatusForSingleGoal,
+        deleteEntry,
+      }}
     >
       {children}
     </GoalContext.Provider>

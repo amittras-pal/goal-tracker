@@ -10,27 +10,30 @@ export type Entry = {
 export type GoalConfig = {
     type: GoalType,
     title: string,
-    description?:string,
+    description?: string,
     target: number,
     createdOn?: string,
     id?: string,
     entries?: Entry[],
-    completed?: boolean
+    completed?: boolean,
+    completedOn?: string | null,
 }
 
 
 export type GoalContextType = {
     goals: GoalConfig[],
     saveGoals: (goals: GoalConfig[]) => void,
-    addEntry: (gid: string, entry: Entry) => void
+    updateEntries: (gid: string, entry: Entry) => void
     updateStatusForSingleGoal: (gid: string, status: boolean) => void;
+    deleteEntry: (gid: string, entryId: string) => void;
 }
 
 export const GoalContext = createContext<GoalContextType>({
     goals: [],
     saveGoals: () => { },
-    addEntry: () => { },
-    updateStatusForSingleGoal: () => { }
+    updateEntries: () => { },
+    updateStatusForSingleGoal: () => { },
+    deleteEntry: () => { }
 });
 
 export const useGoals = () => useContext(GoalContext);

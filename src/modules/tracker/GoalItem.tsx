@@ -1,8 +1,11 @@
-import { Box, Text } from "@mantine/core";
+import { Badge, Box, Text } from "@mantine/core";
 import { PropsWithChildren } from "react";
 import { GoalConfig } from "../../context/context";
+import dayjs from "dayjs";
 
-export default function GoalItem(props: PropsWithChildren & { goal: GoalConfig }) {
+export default function GoalItem(
+  props: PropsWithChildren & { goal: GoalConfig }
+) {
   return (
     <Box
       key={props.goal.id}
@@ -13,7 +16,14 @@ export default function GoalItem(props: PropsWithChildren & { goal: GoalConfig }
         borderRadius: theme.radius.md,
       })}
     >
-      <Text fw="bold">{props.goal.title}</Text>
+      <Text fw="bold">
+        {props.goal.title}{" "}
+        {props.goal.type === "single" && props.goal.completed && (
+          <Badge variant="dot" color="green" component="span">
+            Completed On: {dayjs(props.goal.completedOn).format("MMM DD")}
+          </Badge>
+        )}
+      </Text>
       <Text fz="sm" c="dimmed" fs="italic">
         {props.goal.description}
       </Text>

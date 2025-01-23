@@ -1,9 +1,9 @@
 import { Box, Button, Divider, Text } from "@mantine/core";
 import { useMemo } from "react";
-import { GoalConfig, useGoals } from "../../context/context";
-import GoalStatus from "./GoalStatus";
-import GoalItem from "./GoalItem";
 import { Link } from "react-router-dom";
+import { GoalConfig, useGoals } from "../../context/context";
+import GoalItem from "./GoalItem";
+import GoalStatus from "./GoalStatus";
 
 export default function Tracker() {
   const { goals, updateStatusForSingleGoal } = useGoals();
@@ -54,7 +54,7 @@ export default function Tracker() {
                   updateStatusForSingleGoal(goal.id ?? "", !goal.completed)
                 }
               >
-                {goal.completed ? "Mark Not Completed" : "Mark Completed"}
+                {goal.completed ? "Mark Incomplete" : "Mark Completed"}
               </Button>
             </GoalItem>
           ))}
