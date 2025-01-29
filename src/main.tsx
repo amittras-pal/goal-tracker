@@ -1,10 +1,11 @@
-import { StrictMode } from "react";
+import { lazy, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
-import Layout from "./layout/index.tsx";
-import Configurator from "./modules/configurator/index.tsx";
-import Tracker from "./modules/tracker/index.tsx";
-import IOSync from "./modules/io/index.tsx";
+import Layout from "./layout";
+
+const Configurator = lazy(() => import("./modules/configurator"));
+const Tracker = lazy(() => import("./modules/tracker"));
+const IOSync = lazy(() => import("./modules/io"));
 
 const router = createHashRouter([
   {
