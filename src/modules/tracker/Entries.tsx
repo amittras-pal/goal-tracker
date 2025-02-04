@@ -16,7 +16,7 @@ import EntryForm from "./EntryForm";
 export default function Entries(props: { data: GoalConfig }) {
   const [selected, setSelected] = useState<Entry | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [month, setMonth] = useState(0);
+  const [month, setMonth] = useState(dayjs().month());
 
   const { deleteEntry } = useGoals();
 
