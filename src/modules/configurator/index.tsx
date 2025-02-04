@@ -46,6 +46,10 @@ export default function Configurator() {
         navigate("/tracker");
       })}
     >
+      <Text mb="sm" c="red" fz="sm">
+        For goals created more than a day ago, you can only change the
+        description.
+      </Text>
       {fields.map((field, index) => {
         const blocked = !field.createdOn
           ? false
@@ -61,12 +65,6 @@ export default function Configurator() {
               backgroundColor: theme.colors.dark[6],
             })}
           >
-            {blocked && (
-              <Text mb="sm" c="red" fz="sm">
-                Goals which were created more than 1 day ago can only get their
-                description changed.
-              </Text>
-            )}
             <TextInput
               withAsterisk
               placeholder="Goal Title"
@@ -74,6 +72,11 @@ export default function Configurator() {
               label="Goal Title"
               {...register(`goals.${index}.title`)}
               disabled={blocked}
+              description={
+                blocked
+                  ? `Created on ${dayjs(field.createdOn).format("DD MMM, YY")}`
+                  : undefined
+              }
             />
             <Textarea
               {...register(`goals.${index}.description`)}
