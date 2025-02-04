@@ -27,8 +27,8 @@ export default function GoalProvider({ children }: PropsWithChildren) {
   const saveGoals = (goals: GoalConfig[]) => {
     const updatedGoals = goals.map((g) => ({
       ...g,
-      createdOn: dayjs().toISOString(),
-      id: g.id || v4().split("-").at(-1),
+      createdOn: g.createdOn ?? dayjs().toISOString(),
+      id: g.id ?? v4().split("-").at(-1),
     }));
     setGoals(updatedGoals);
     writeToDisk(updatedGoals);
