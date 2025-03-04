@@ -20,6 +20,37 @@ export default function Entries(props: { data: GoalConfig }) {
 
   const { deleteEntry } = useGoals();
 
+  const streak = useMemo(() => {
+    let check = dayjs();
+    let streakToday = 0;
+
+    const entryDates = props.data.entries?.map((e) => dayjs(e.date)) ?? [];
+
+    while (entryDates.find((e) => check.isSame(e, "date"))) {
+      streakToday++;
+      check = check.subtract(1, "day");
+    }
+
+    check = dayjs().startOf("year");
+    const today = dayjs();
+
+    let overallLongest = 0;
+    let checkingLongest = 0;
+    while (today.diff(check, "days") > 0) {
+      if (entryDates.find((e) => check.isSame(e, "date"))) checkingLongest++;
+      else {
+        if (checkingLongest > overallLongest) overallLongest = checkingLongest;
+        checkingLongest = 0;
+      }
+      check = check.add(1, "days");
+    }
+
+    if (streakToday > overallLongest) overallLongest = streakToday;
+    if (checkingLongest > overallLongest) overallLongest = checkingLongest;
+    
+    return { current: streakToday, longest: overallLongest };
+  }, [props.data.entries]);
+
   const getDayColor = (theme: MantineTheme, daysEntry?: Entry) => {
     if (!daysEntry) return "transparent";
     if (selected && selected.id == daysEntry.id) return theme.colors.green[8];
@@ -38,7 +69,7 @@ export default function Entries(props: { data: GoalConfig }) {
   }, [month, props.data.entries]);
 
   return (
-    <Flex direction="column" align="center" gap={"4px"}>
+    <Flex direction="column" gap={"4px"}>
       <Calendar
         minDate={dayjs().startOf("year").toDate()}
         maxDate={dayjs().toDate()}
@@ -86,20 +117,31 @@ export default function Entries(props: { data: GoalConfig }) {
           );
         }}
       />
-      <Flex gap={"4px"} justify="space-between" style={{ width: "100%" }}>
-        <Text fz="sm">
-          Total Entries:{" "}
-          <Text component="span" fw="bold">
-            {props.data.entries?.length ?? 0}
-          </Text>
+      <Text fz="sm">
+        Total Entries:{" "}
+        <Text component="span" fw="bold">
+          {props.data.entries?.length ?? 0}
         </Text>
-        <Text fz="sm">
-          Entries in {dayjs().set("month", month).format("MMMM")}:{" "}
-          <Text component="span" fw="bold">
-            {entriesThisMonth}
-          </Text>
+      </Text>
+      <Text fz="sm">
+        Entries in {dayjs().set("month", month).format("MMMM")}:{" "}
+        <Text component="span" fw="bold">
+          {entriesThisMonth}
         </Text>
-      </Flex>
+      </Text>
+      <Text fz="sm">
+        Current Streak:{" "}
+        <Text component="span" fw="bold">
+          {streak.current}
+        </Text>
+      </Text>
+      <Text fz="sm">
+        Longest Streak:{" "}
+        <Text component="span" fw="bold">
+          {streak.longest}
+        </Text>
+      </Text>
+      <pre>{JSON.stringify({ streak }, null, 2)}</pre>
       {selected && (
         <Alert
           variant="light"
@@ -109,6 +151,7 @@ export default function Entries(props: { data: GoalConfig }) {
           title={`Entry for ${dayjs(selected.date).format("DD MMM")}`}
         >
           {selected.notes || "--- No Notes ---"}
+          Logged @ {dayjs(selected.date).format("HH:mm:ss a")}
           <Divider my="xs" />
           {!showForm ? (
             <Flex gap="sm">
