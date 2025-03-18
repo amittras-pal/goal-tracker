@@ -4,7 +4,7 @@ import { GoalConfig } from "../../context/context";
 import dayjs from "dayjs";
 
 export default function GoalItem(
-  props: PropsWithChildren & { goal: GoalConfig }
+  props: PropsWithChildren & { goal: GoalConfig, index: number }
 ) {
   return (
     <Box
@@ -17,7 +17,7 @@ export default function GoalItem(
       })}
     >
       <Text fw="bold">
-        {props.goal.title}{" "}
+        {props.index}. {props.goal.title}{" "}
         {props.goal.type === "single" && props.goal.completed && (
           <Badge variant="dot" color="green" component="span">
             Completed On: {dayjs(props.goal.completedOn).format("MMM DD")}

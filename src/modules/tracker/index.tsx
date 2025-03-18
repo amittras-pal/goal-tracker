@@ -12,6 +12,7 @@ export default function Tracker() {
     if (!goals.length) return null;
     const single: GoalConfig[] = [];
     const calendar: GoalConfig[] = [];
+    
     goals.forEach((goal) => {
       if (goal.type === "single") single.push(goal);
       else calendar.push(goal);
@@ -36,15 +37,23 @@ export default function Tracker() {
         </Text>
       ) : (
         <>
-          <Divider variant="dashed" label="Calendar Trackers" mb="xs" />
-          {collections.calendar.map((goal) => (
-            <GoalItem key={goal.id} goal={goal}>
+          <Divider
+            variant="dashed"
+            label={`Calendar Trackers (${collections.calendar.length})`}
+            mb="xs"
+          />
+          {collections.calendar.map((goal, index) => (
+            <GoalItem key={goal.id} goal={goal} index={index + 1}>
               <GoalStatus data={goal} />
             </GoalItem>
           ))}
-          <Divider variant="dashed" label="Single Events" mb="xs" />
-          {collections.single.map((goal) => (
-            <GoalItem key={goal.id} goal={goal}>
+          <Divider
+            variant="dashed"
+            label={`Single Events (${collections.single.length})`}
+            mb="xs"
+          />
+          {collections.single.map((goal, index) => (
+            <GoalItem key={goal.id} goal={goal} index={index + 1}>
               <Button
                 size="xs"
                 mt="xs"

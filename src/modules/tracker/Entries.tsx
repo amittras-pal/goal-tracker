@@ -141,7 +141,6 @@ export default function Entries(props: { data: GoalConfig }) {
           {streak.longest}
         </Text>
       </Text>
-      <pre>{JSON.stringify({ streak }, null, 2)}</pre>
       {selected && (
         <Alert
           variant="light"

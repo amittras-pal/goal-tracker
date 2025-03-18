@@ -3,6 +3,7 @@ import { Entry, GoalConfig, GoalContext } from "./context";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
 import { getData, initDB, Stores, writeToDB } from "./database";
+import sortBy from "lodash/sortBy";
 
 export default function GoalProvider({ children }: PropsWithChildren) {
   const [goals, setGoals] = useState<GoalConfig[]>([]);
@@ -12,7 +13,9 @@ export default function GoalProvider({ children }: PropsWithChildren) {
       try {
         await initDB();
         await getData(Stores.Goals).then((res) => {
-          if (res.length > 0 && Array.isArray(res)) setGoals(res);
+          if (res.length > 0 && Array.isArray(res)) {
+            setGoals(sortBy(res, 'title'));
+          }
         });
       } catch (error) {
         console.error(error);

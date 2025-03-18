@@ -2,6 +2,7 @@ import { Alert, Box, Button, FileInput, Flex, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { GoalConfig, useGoals } from "../../context/context";
+import sortBy from "lodash/sortBy";
 import {
   EXPORT_NOTICE,
   FILE_CONTENT_ERROR,
@@ -56,7 +57,7 @@ export default function IOSync() {
           // return;
           saveGoals([]);
           const content = JSON.parse(reader.result) as GoalConfig[];
-          saveGoals(JSON.parse(reader.result) as GoalConfig[]);
+          saveGoals(sortBy(content, "title"));
           notifications.show({
             title: `${content.length} Goals Imported.`,
             message: "Your goals from file have been imported successfully.",

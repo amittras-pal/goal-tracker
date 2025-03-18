@@ -47,6 +47,7 @@ export default function GoalStatus({ data }: { data: GoalConfig }) {
 
       <Modal
         opened={show}
+        fullScreen
         centered
         withCloseButton
         onClose={toggle}
